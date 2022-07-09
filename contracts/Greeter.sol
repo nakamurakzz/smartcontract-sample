@@ -2,7 +2,7 @@ pragma solidity ^0.8.15;
 
 import "@openzeppelin/contracts/access/Ownable.sol";
 
-contract GreeterContract is Ownable {
+contract Greeter is Ownable {
   string private _greeting = "Hello, World!";
 
   function greet() external view returns (string memory) {

@@ -8,3 +8,20 @@ https://chrome.google.com/webstore/detail/metamask/nkbihfbeogaeaoehlefnkodbefgpg
 ```
 npm i -g truffle
 ```
+
+## コンパイル
+```
+truffle compile
+```
+
+## マイグレーション
+```
+truffle migrate --network development
+```
+
+## クライアント
+```
+cd clients
+yarn
+yarn start
+```
