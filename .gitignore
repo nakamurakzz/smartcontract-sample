@@ -1,5 +1,6 @@
 # Solidity
 build
+.client/src/contrancs/*.json
 
 # Logs
 logs
