@@ -20,6 +20,7 @@
   },
   "homepage": "https://github.com/nakamurakzz/smartcontract-sample#readme",
   "dependencies": {
-    "@openzeppelin/contracts": "^4.7.0"
+    "@openzeppelin/contracts": "^4.7.0",
+    "truffle": "^5.5.21"
   }
 }
