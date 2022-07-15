@@ -1,3 +1,9 @@
+# 寄付アプリケーション
+- Ownerコントラクトを継承することで、アドレスの管理を安全に行う
+  - Owner.onlyOwner() でコントラクトのオーナーのみがアクセスすることを制限する
+
+
+
 # React Truffle Box
 
 This box comes with everything you need to start using Truffle to write, compile, test, and deploy smart contracts, and interact with them from a React app.
