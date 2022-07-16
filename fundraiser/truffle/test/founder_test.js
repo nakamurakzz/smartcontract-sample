@@ -103,6 +103,52 @@ contract("Fundraiser", accounts => {
       const tx = await fundraiser.donate({from:donor, value});
       const expectedEvent = "DonationReceived"
       const actualEvent = tx.logs[0].event;
+      assert.equal(actualEvent,expectedEvent,"event should match")
+    });
+  });
+
+  describe("withdraw", () => {
+    describe("access control", () => {
+      it("thrown an error when cakked from a non-owner account", async () => {
+        try{
+          await fundraiser.withdraw({from:accounts[3]})
+          assert.fail("should have thrown")  
+        }catch(err){
+          const expectedError = "RuntimeError"
+          const actual = err.data.name;
+          assert.equal(actual,expectedError,"should not be permitted")
+        }
+      });
+
+      it("permits owner to withdraw", async () => {
+        try{
+          await fundraiser.withdraw({from:owner})
+          assert(true,"no error thrown")
+        }catch(err){
+          assert.fail("should not have thrown")
+        }
+      });
+    });
+
+    describe("transfer to beneficiary", () => {
+      it("transfer to beneficiary", async () => {
+        const currentBalance = await web3.eth.getBalance(fundraiser.address)
+        const currentBeneficiaryBalance = await web3.eth.getBalance(beneficiary);
+
+        await fundraiser.withdraw({from:owner})
+
+        const newBalance = await web3.eth.getBalance(fundraiser.address)
+        const newBeneficiaryBalance = await web3.eth.getBalance(beneficiary);
+        const diff = newBeneficiaryBalance - currentBeneficiaryBalance;
+        assert.equal(newBalance,0,"balance should be 0")
+        assert.equal(diff,currentBalance,"balance should match")
+      });
+    });
+
+    it("emits Withdraw event", async() => {
+      const tx = await fundraiser.withdraw({from:owner})
+      const expectedEvent = "Withdraw"
+      const actualEvent = tx.logs[0].event;
 
       assert.equal(actualEvent,expectedEvent,"event should match")
     });

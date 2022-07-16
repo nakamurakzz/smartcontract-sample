@@ -11,6 +11,7 @@ contract Fundraiser is Ownable {
     // イベントは主にログを残す機能
     // indexed はEVMにおいてサブスクライバが自分に関係するかもしれないイベントを絞り込みやすくする ？
     event DonationReceived(address indexed donor, uint256 value);
+    event Withdraw(uint256 amount);
 
     // キー：アドレスを寄付の配列に紐付けることが出来る
     // マッピングは列挙型ではないため、forループはできない
@@ -61,7 +62,7 @@ contract Fundraiser is Ownable {
             date: block.timestamp
         });
         totalDonations += donation.value;
-        totalDonationCounts ++;
+        totalDonationCounts++;
         _donations[msg.sender].push(donation);
 
         // DonationReceivedイベントを発行する
@@ -85,5 +86,12 @@ contract Fundraiser is Ownable {
             dates[index] = _donations[msg.sender][index].date;
         }
         return (values, dates);
+    }
+
+    function withdraw() public onlyOwner {
+        // コントラクトの残高を取得
+        uint256 blance = address(this).balance;
+        beneficiary.transfer(blance);
+        emit Withdraw(blance);
     }
 }
