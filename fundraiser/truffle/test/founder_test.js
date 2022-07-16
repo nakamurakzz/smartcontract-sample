@@ -153,4 +153,27 @@ contract("Fundraiser", accounts => {
       assert.equal(actualEvent,expectedEvent,"event should match")
     });
   });
+
+  describe("fallback", () => {
+    const value = web3.utils.toWei('0.0289');
+    it("increases the total donation", async () => {
+      const currentTotalDonations = await fundraiser.totalDonations()
+      await web3.eth.sendTransaction({
+        to: fundraiser.address, from: accounts[9], value
+      });
+      const newTotalDonations = await fundraiser.totalDonations()
+      const diff = newTotalDonations - currentTotalDonations;
+      assert.equal(diff, value, "total donation should match")
+    });
+
+    it("increases the total donation counts", async () => {
+      const currentTotalDonationCounts = await fundraiser.totalDonationCounts()
+      await web3.eth.sendTransaction({
+        to: fundraiser.address, from: accounts[9], value
+      });
+      const newTotalDonationCounts = await fundraiser.totalDonationCounts()
+      const diffCounts = newTotalDonationCounts - currentTotalDonationCounts;
+      assert.equal(diffCounts, 1, "total donation counts should match")
+    });
+  });
 })
