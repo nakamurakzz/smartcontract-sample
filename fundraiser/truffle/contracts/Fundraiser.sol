@@ -7,11 +7,17 @@ contract Fundraiser is Ownable {
         uint256 date;
     }
 
+    // イベント定義
+    // イベントは主にログを残す機能
+    // indexed はEVMにおいてサブスクライバが自分に関係するかもしれないイベントを絞り込みやすくする ？
+    event DonationReceived(address indexed donor, uint256 value);
+
     // キー：アドレスを寄付の配列に紐付けることが出来る
     // マッピングは列挙型ではないため、forループはできない
     // _donations[address]で寄付の履歴の配列を取得できる
     mapping(address => Donation[]) private _donations;
 
+    // 状態変数
     string public name;
     string public url;
     string public imageURL;
@@ -19,6 +25,9 @@ contract Fundraiser is Ownable {
 
     address payable public beneficiary;
     address public custodian;
+
+    uint256 public totalDonations;
+    uint256 public totalDonationCounts;
 
     constructor(
         string memory _name,
@@ -34,9 +43,11 @@ contract Fundraiser is Ownable {
         description = _desctiption;
         beneficiary = _beneficiary;
         transferOwnership(_custodian);
+        totalDonations = 0;
+        totalDonationCounts = 0;
     }
 
-    function setBeneficiary (address payable _beneficiary) public onlyOwner {
+    function setBeneficiary(address payable _beneficiary) public onlyOwner {
         beneficiary = _beneficiary;
     }
 
@@ -49,12 +60,19 @@ contract Fundraiser is Ownable {
             value: msg.value,
             date: block.timestamp
         });
+        totalDonations += donation.value;
+        totalDonationCounts ++;
         _donations[msg.sender].push(donation);
+
+        // DonationReceivedイベントを発行する
+        emit DonationReceived(msg.sender, msg.value);
     }
 
-    function myDonations() public view returns (
-        uint256[] memory values, uint256[] memory dates
-    ) {
+    function myDonations()
+        public
+        view
+        returns (uint256[] memory values, uint256[] memory dates)
+    {
         // マッピングは列挙型ではないため、↓のようにはかけない
         // values = _donations[msg.sender].map(donation => donation.value);
 
