@@ -73,7 +73,7 @@ contract Fundraiser is Ownable {
     // Contractに無い関数が呼ばれた場合に呼ばれる
     // payableとするとEthを受け取ることができる
     // Etherを受け取るContractはfallback関数を実装するべき
-    fallback () external payable {
+    fallback() external payable {
         // Etherを受け取るためだけにフォールバックファンクションを実行したい場合
         require(msg.data.length == 0, "Fallback function only accepts ether");
         totalDonations += msg.value;
